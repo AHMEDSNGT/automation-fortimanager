@@ -1,0 +1,54 @@
+---
+- name: Create device group "Hub" on FortiManager
+  hosts: localhost
+  gather_facts: no
+  vars:
+    fmg_url: "https://10.112.45.13/jsonrpc"
+    fmg_user: "admin"
+    fmg_pass: "admin"
+    adom: "root"
+  tasks:
+    - name: Get authentication token from FortiManager
+      uri:
+        url: "{{ fmg_url }}"
+        method: POST
+        body_format: json
+        body:
+          method: "exec"
+          params:
+            - url: "/sys/login/user"
+              data:
+                user: "{{ fmg_user }}"
+                passwd: "{{ fmg_pass }}"
+          id: 1
+          jsonrpc: "2.0"
+        return_content: yes
+        validate_certs: no
+      register: login_response
+
+    - name: Extract session token
+      set_fact:
+        session_token: "{{ login_response.json.result[0].data.session }}"
+
+    - name: Create device group "Hub"
+      uri:
+        url: "{{ fmg_url }}"
+        method: POST
+        body_format: json
+        headers:
+          "Authorization": "Bearer {{ session_token }}"
+        body:
+          method: "add"
+          params:
+            - url: "/dvmdb/adom/{{ adom }}/device/group"
+              data:
+                name: "Hub"
+          id: 2
+          jsonrpc: "2.0"
+        return_content: yes
+        validate_certs: no
+      register: create_group_response
+
+    - name: Show creation result
+      debug:
+        var: create_group_response.json
