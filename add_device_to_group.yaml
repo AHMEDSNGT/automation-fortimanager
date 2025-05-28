@@ -1,8 +1,8 @@
 ---
-- name: Add device to group 'Hub'
+- name: Add device Hub to device group Hub
   hosts: localhost
   connection: local
-  gather_facts: no
+  gather_facts: false
 
   collections:
     - fortinet.fortimanager
@@ -10,19 +10,13 @@
   vars:
     adom: "root"
     group_name: "Hub"
-    device_to_add:
-      name: "Hub"
-      vdom: "root"
-      meta fields: {}
+    device_name: "Hub"
 
   tasks:
-    - name: Add device to group Hub
-      fmgr_dvmdb_group:
+    - name: Add device Hub to group Hub
+      fmgr_dvmdb_group_adddevice:
         adom: "{{ adom }}"
-        state: present
-        group:
-          name: "{{ group_name }}"
-          os_type: "fos"
-          device-list:
-            - name: "{{ device_to_add.name }}"
-              vdom: "{{ device_to_add.vdom }}"
+        device_group: "{{ group_name }}"
+        dvm_dev_list:
+          - name: "{{ device_name }}"
+            vdom: "root"
