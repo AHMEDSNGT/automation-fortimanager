@@ -1,0 +1,44 @@
+---
+- name: Add FortiGate device to FortiManager
+  hosts: localhost
+  gather_facts: no
+  connection: local
+
+  vars:
+    fmg_ip: "10.112.45.13"
+    fmg_username: "admin"
+    fmg_password: "admin"
+    adom: "root"
+    device_name: "Hub"
+    device_ip: "172.29.0.254"
+
+  tasks:
+    - name: Add device to FortiManager
+      uri:
+        url: "https://{{ fmg_ip }}/jsonrpc"
+        method: POST
+        user: "{{ fmg_username }}"
+        password: "{{ fmg_password }}"
+        validate_certs: no
+        headers:
+          Content-Type: "application/json"
+        body_format: json
+        body:
+          method: "add"
+          params:
+            - url: "/dvmdb/adom/{{ adom }}/device"
+              data:
+                - name: "{{ device_name }}"
+                  ip: "{{ device_ip }}"
+                  adm_usr: "admin"
+                  adm_pass: "admin"
+                  mgmt_mode: "fmg"
+                  platform_str: "FortiGate"
+                  os_type: "fos"
+                  os_ver: "7.0"
+        status_code: 200
+      register: result
+
+    - name: Debug result
+      debug:
+        var: result
