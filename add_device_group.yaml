@@ -1,5 +1,5 @@
 ---
-- name: Add device to device group using fmgr_device_group
+- name: Add device to group Hub
   hosts: localhost
   connection: local
   gather_facts: false
@@ -8,10 +8,9 @@
     - fortinet.fortimanager
 
   tasks:
-    - name: Add Hub to group Hub
-      fmgr_device_group:
-        mode: "add"
-        grp_name: "Hub"
-        grp_members: "Hub"
+    - name: Add Hub device to Hub group
+      fmgr_dvmdb_group_adddev:
         adom: "root"
-        vdom: "root"
+        group: "Hub"
+        device:
+          name: "Hub"
