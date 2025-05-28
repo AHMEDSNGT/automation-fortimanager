@@ -1,0 +1,18 @@
+---
+- name: Add existing device to a device group in FortiManager
+  hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+    - name: Add Hub device to Hub group
+      fortinet.fortimanager.fmgr_dvmdb_group_adddev:
+        adom: root
+        group: Hub
+        dvm-devices:
+          - name: Hub
+      register: result
+
+    - name: Display result
+      debug:
+        var: result
