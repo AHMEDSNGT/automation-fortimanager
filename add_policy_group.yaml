@@ -1,0 +1,32 @@
+---
+- name: Add firewall policy to group Branches on FortiManager
+  hosts: localhost
+  collections:
+    - fortinet.fortimanager
+  connection: local
+  gather_facts: no
+
+  tasks:
+    - name: Add a simple firewall policy in policy package "Branches"
+      fmgr_pkg_firewall_policy:
+        adom: "root"
+        pkg: "Branches"
+        firewall_policy:
+          name: "Allow_all"
+          srcintf:
+            - name: "any"
+          dstintf:
+            - name: "any"
+          srcaddr:
+            - name: "all"
+          dstaddr:
+            - name: "all"
+          action: "accept"
+          schedule: "always"
+          service:
+            - name: "ALL"
+          logtraffic: "all"
+          status: "enable"
+          comments: "Allow all traffic"
+          policyid: 1
+        state: present
