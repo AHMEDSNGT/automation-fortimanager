@@ -9,7 +9,7 @@
 
   tasks:
     - name: Install sdwan policy package on branches
-      fortinet.fortimanager.fmgr_pkg_install:
+      fmgr_pkg_install:
         adom: "root"
         pkg: "sdwan"
         scope:
