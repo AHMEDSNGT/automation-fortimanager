@@ -14,7 +14,7 @@
 
   tasks:
     - name: Add device Hub to group Hub
-      fmgr_dvmdb_group_adddevice:
+      fmgr_device_group:
         adom: "{{ adom }}"
         device_group: "{{ group_name }}"
         dvm_dev_list:
